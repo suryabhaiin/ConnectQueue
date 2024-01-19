@@ -3,24 +3,41 @@ Config = {}
 -- priority list can be any identifier. (hex steamid, steamid32, ip) Integer = power over other people with priority
 -- a lot of the steamid converting websites are broken rn and give you the wrong steamid. I use https://steamid.xyz/ with no problems.
 -- you can also give priority through the API, read the examples/readme.
+
+-- individual priority system
+
 Config.Priority = {
+    ["STEAM_0:1:0000####"] = 1,
+    ["steam:110000######"] = 25,
     ["ip:127.0.0.0"] = 85
 }
 
-Config.PriorityRoles = { --  ["DISCORD_ROLE_ID"] = POWER,
-    ["880863510475718666"] = 100,  -- Owner
-    ["1186365893576511550"] = 99, -- Bandhilki
-    ["930078697262821417"] = 98, -- Administrator
-    ["899693043471507498"] = 97,  -- Developer
-    ["1186549704318799924"] = 50,  -- Prio 3
-    ["1186549286146678844"] = 40,  -- Prio 2
-    ["1186549574081466408"] = 30,  -- Prio 1
-    ["881112830835834891"] = 5,  -- Staff
-    ["1185812982924591144"] = 4, -- PD
-    ["1185812792301850726"] = 4, -- EMS
+-- discord role based priority system
+Config.PriorityRoles = {
+    --  ["DISCORD_ROLE_ID"] = POWER,
+    ["757601986542829598"] = 50, -- prio level x
 }
 
--- "whitelist" only server
+-- "discord whitelist" only server
+Config.DiscordWhitelistOnly = true -- true or false if true then 
+
+Config.DiscordWhitelistRoles = {
+    --  ["DISCORD_ROLE_ID"] = true,
+    ["757601986542829598"] = true, -- Whitelist
+}
+
+-- "developer" only server
+Config.DeveloperOnly = true -- true or false if true then 
+
+Config.DiscordDeveloperRoles = { 
+    --  ["DISCORD_ROLE_ID"] = true,
+    ["754651893111717908"] = true, -- Devloper
+}
+
+-- require people to run steam
+Config.RequireSteam = false
+
+-- "prior whitelist" only server
 Config.PriorityOnly = false
 
 -- disables hardcap, should keep this true
@@ -66,5 +83,6 @@ Config.Language = {
     timedout = "\xE2\x9D\x97[Queue] Error: Timed out?",
     wlonly = "\xE2\x9D\x97[Queue] You must be whitelisted to join this server",
     steam = "\xE2\x9D\x97 [Queue] Error: Steam must be running in background",
-    discord = "\xE2\x9D\x97 [Queue] Error: Discord must be running in background"
+    discord = "\xE2\x9D\x97 [Queue] Error: Discord must be running in background",
+    devonly = "\xE2\x9D\x97[Queue] Warrning: Server is open only for developers",
 }

@@ -56,18 +56,34 @@ set sb:discordBotToken "your bot token here" -- make sure bot has SERVER MEMBERS
 set sb:discordGuildId "your discord server id"      -- our discord server id
 ```
 
-## Add Discord Role as per priority power
+## Assign following role and updated as per your discord role
+
+### Discord Role as per priority power
 ```Lua
 
-Config.PriorityRoles = { --  ["DISCORD_ROLE_ID"] = POWER,
-    ["1186549704318799924"] = 30,  -- Prio 3
-    ["1186549286146678844"] = 20,  -- Prio 2
-    ["1186549574081466408"] = 10,  -- Prio 1
+Config.PriorityRoles = {
+    ["757601986542829598"] = 50, -- prio level x (Discord Role ID)
 }
 
 ```
-### Discord priority end
 
+### Discord Role whitesting
+```Lua
+Config.DiscordWhitelistOnly = true -- true or false if true then 
+Config.DiscordWhitelistRoles = {
+    ["757601986542829598"] = true, -- Whitelist Role ID
+}
+
+```
+
+### Developer only server
+```Lua
+Config.DeveloperOnly = true -- true or false if true then 
+Config.DiscordDeveloperRoles = { 
+    ["754651893111717908"] = true, -- Devloper Role ID
+}
+
+```
 
 ## AddPriority
 Call this to add an identifier to the priority list.

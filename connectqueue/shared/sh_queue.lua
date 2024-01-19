@@ -26,6 +26,8 @@ _Queue.PlayerList = {}
 _Queue.PlayerCount = 0
 _Queue.Priority = {}
 _Queue.PriorityRoles = {}
+_Queue.DiscordWhitelistRoles = {}
+_Queue.DiscordDeveloperRoles = {}
 _Queue.Connecting = {}
 _Queue.JoinCbs = {}
 _Queue.TempPriority = {}
@@ -56,6 +58,15 @@ end
 for id, power in pairs(Config.PriorityRoles) do
     _Queue.PriorityRoles[string_lower(id)] = power
 end
+
+for id, val in pairs(Config.DiscordWhitelistRoles) do
+    _Queue.DiscordWhitelistRoles[string_lower(id)] = val
+end
+
+for id, val in pairs(Config.DiscordDeveloperRoles) do
+    _Queue.DiscordDeveloperRoles[string_lower(id)] = val
+end
+
 
 function Queue:DebugPrint(msg)
     if Queue.Debug then
@@ -107,20 +118,6 @@ end
 function Queue:GetQueueList()
     return _Queue.QueueList
 end
-
--- function Queue:GetPriorityList()
-
---     local nowtimestamp = os.time()
---     local nowttime = os.date('%Y-%m-%d %H:%M:%S', nowtimestamp)
---     exports.oxmysql:execute('SELECT * FROM `sbadmin_priority` WHERE valid >= ? AND status = ?', {nowttime, '1'}, function(results)
---         if results[1] then
---             for _, v in pairs(results) do
---                 _Queue.Priority[v.steam] = v.power
---             end
---         end
---     end)
---     return _Queue.Priority
--- end
 
 function Queue:GetPriorityList()
     return _Queue.Priority
@@ -474,19 +471,72 @@ local function playerConnect(name, setKickReason, deferrals)
         return
     else
         ids = Queue:GetIds(src)
+        local roles = GetDiscordRoles(src)
+        while not roles do
+            Wait(100)
+        end
         if not Config.Priority[discordId] then
-            local roles = nil
-            roles = GetDiscordRoles(src)
             local priority = 0
             for _, role in ipairs(roles) do
                 if _Queue.PriorityRoles[role] then
                     _Queue.Priority[discordId] = _Queue.PriorityRoles[role]
-                    Queue:DebugPrint("Addedd in to queue priority " .. discordId .. " with power ".._Queue.Priority[discordId])
+                    Queue:DebugPrint("^4"..name.." Added in to queue priority " .. discordId .. " with power ^3".._Queue.Priority[discordId].."^0")
                     break;
                 end
             end
-            while not roles do
+        end
+
+        if Config.DiscordWhitelistOnly then
+            local isWhitelist = false
+            local isCheking = true
+            local count = #roles
+            for _, role in ipairs(roles) do
+                if _Queue.DiscordWhitelistRoles[role] then
+                    isWhitelist = true
+                    isCheking = false
+                    Queue:DebugPrint("^2"..name.." Whitelisted " .. discordId.."^0")
+                    break;
+                end
+                count = count - 1
+                if count < 1 then
+                    isCheking = false
+                end
+            end
+            while isCheking do
                 Wait(100)
+            end
+            if not isWhitelist then
+                Queue:DebugPrint("^1"..name.." Not Whitelisted " .. discordId.."^0")
+                deferrals.done(tostring(Config.Language.wlonly) or "You must be whitelisted to join this server")
+                CancelEvent()
+                return
+            end
+        end
+
+        if Config.DeveloperOnly then
+            local isDevloper = false
+            local isCheking = true
+            local count = #roles
+            for _, role in ipairs(roles) do
+                if _Queue.DiscordDeveloperRoles[role] then
+                    isDevloper = true
+                    isCheking = false
+                    Queue:DebugPrint("^2"..name.." Developer " .. discordId.."^0")
+                    break;
+                end
+                count = count - 1
+                if count < 1 then
+                    isCheking = false
+                end
+            end
+            while isCheking do
+                Wait(100)
+            end
+            if not isDevloper then
+                Queue:DebugPrint("^1"..name.." Not Developer " .. discordId.."^0")
+                deferrals.done(tostring(Config.Language.devonly) or "Warrning: Server is open only for developers")
+                CancelEvent()
+                return
             end
         end
     end
@@ -538,6 +588,13 @@ local function playerConnect(name, setKickReason, deferrals)
         done(Config.Language.idrr)
         CancelEvent()
         Queue:DebugPrint("Dropped " .. name .. ", couldn't retrieve any of their id's")
+        return
+    end
+
+    if Config.RequireSteam and not Queue:IsSteamRunning(src) then
+        -- prevent joining
+        done(Config.Language.steam)
+        CancelEvent()
         return
     end
 
