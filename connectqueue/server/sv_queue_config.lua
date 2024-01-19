@@ -19,7 +19,7 @@ Config.PriorityRoles = {
 }
 
 -- "discord whitelist" only server
-Config.DiscordWhitelistOnly = true -- true or false if true then 
+Config.DiscordWhitelistOnly = false -- true or false if true then 
 
 Config.DiscordWhitelistRoles = {
     --  ["DISCORD_ROLE_ID"] = true,
@@ -27,7 +27,7 @@ Config.DiscordWhitelistRoles = {
 }
 
 -- "developer" only server
-Config.DeveloperOnly = true -- true or false if true then 
+Config.DeveloperOnly = false -- true or false if true then 
 
 Config.DiscordDeveloperRoles = { 
     --  ["DISCORD_ROLE_ID"] = true,
