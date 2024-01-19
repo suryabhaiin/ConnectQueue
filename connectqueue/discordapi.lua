@@ -128,7 +128,6 @@ CreateThread(function()
 	if mguild.code == 200 then
 		local data = json.decode(mguild.data)
 		sendDebugMessage("Successful connection to Guild : " .. data.name .. " (" .. data.id .. ")")
-		-- print(json.encode(GetUserRolesInGuild("759846912387579924", "656158231458218034")))
 	else
 		sendDebugMessage("An error occured, please check your config and ensure everything is correct. Error: " ..
 		(mguild.data and json.decode(mguild.data) or mguild.code))
