@@ -129,3 +129,7 @@ Queue.Exports:IsPriority(ids)
 Queue.Exports:GetSize()
 -- plus many more...
 ```
+
+
+## Discord Api Credit
+[Badger Discord API](https://github.com/JaredScar/Badger_Discord_API)
